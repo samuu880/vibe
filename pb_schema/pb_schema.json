@@ -1,0 +1,197 @@
+[
+  {
+    "id": "_pb_users_auth_",
+    "name": "users",
+    "type": "auth",
+    "system": false,
+    "schema": [
+      {
+        "name": "birth_date",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "age",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "aura",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "aura_tier",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "avatar",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "bio",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "is_admin",
+        "type": "bool",
+        "required": false
+      },
+      {
+        "name": "is_banned",
+        "type": "bool",
+        "required": false
+      },
+      {
+        "name": "streak_days",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_user_username` ON `users` (`username`)"
+    ],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "",
+    "updateRule": "id = @request.auth.id",
+    "deleteRule": "id = @request.auth.id"
+  },
+  {
+    "id": "vibes_col_001",
+    "name": "vibes",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "name": "user",
+        "type": "relation",
+        "required": true,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": true,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "type",
+        "type": "select",
+        "required": true,
+        "options": {
+          "values": ["bereal", "post", "audio"]
+        }
+      },
+      {
+        "name": "front_image",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "back_image",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "media",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "audio",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "caption",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "tags",
+        "type": "json",
+        "required": false
+      },
+      {
+        "name": "aura_earned",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "likes_count",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "is_on_time",
+        "type": "bool",
+        "required": false
+      },
+      {
+        "name": "moderation_flag",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id = user",
+    "deleteRule": "@request.auth.id = user || @request.auth.is_admin = true"
+  },
+  {
+    "id": "messages_col_002",
+    "name": "messages",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "name": "sender",
+        "type": "relation",
+        "required": true,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": true,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "receiver",
+        "type": "relation",
+        "required": true,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": true,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "audio",
+        "type": "file",
+        "required": false
+      },
+      {
+        "name": "is_ephemeral",
+        "type": "bool",
+        "required": false
+      },
+      {
+        "name": "is_read",
+        "type": "bool",
+        "required": false
+      }
+    ],
+    "listRule": "@request.auth.id = sender || @request.auth.id = receiver",
+    "viewRule": "@request.auth.id = sender || @request.auth.id = receiver",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id = receiver",
+    "deleteRule": "@request.auth.id = sender || @request.auth.id = receiver"
+  }
+]
